@@ -1,0 +1,187 @@
+openapi: 3.1.0
+info:
+  title: CharCookery API
+  version: 1.0.0
+  description: A REST API backend for CharCookery, an Android project built as a
+    course requirement for MOBDEVE.
+servers:
+  - url: http://localhost:3000/
+    description: Local Dev Endpoint
+paths:
+  /api/:
+    get:
+      summary: Check API status
+      responses:
+        "200":
+          description: API is up and running
+  /api/token:
+    post:
+      summary: Sign in with email and password
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+                  example: password
+              required:
+                - grant_type
+                - username
+                - password
+        required: true
+      responses:
+        "200":
+          description: Successfully signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSchema"
+  /api/user:
+    post:
+      summary: Create a new user account
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                  example: password
+              required:
+                - email
+                - password
+        required: true
+      responses:
+        "201":
+          description: User account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSchema"
+  /api/recipe: {}
+  /api/recipes: {}
+components:
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /api/token
+  schemas:
+    UserSchema:
+      type: object
+      properties:
+        uid:
+          type: string
+        email:
+          type:
+            - string
+            - "null"
+          format: email
+        emailVerified:
+          type: boolean
+        isAnonymous:
+          type: boolean
+        providerData:
+          type: array
+          items:
+            type: object
+            properties:
+              displayName:
+                type:
+                  - string
+                  - "null"
+              email:
+                type:
+                  - string
+                  - "null"
+                format: email
+              phoneNumber:
+                type:
+                  - string
+                  - "null"
+              photoURL:
+                type:
+                  - string
+                  - "null"
+              providerId:
+                type: string
+              uid:
+                type: string
+            required:
+              - displayName
+              - email
+              - phoneNumber
+              - photoURL
+              - providerId
+              - uid
+        stsTokenManager:
+          $ref: "#/components/schemas/TokensSchema"
+        createdAt:
+          type: string
+        lastLoginAt:
+          type: string
+        apiKey:
+          type: string
+        appName:
+          type: string
+      required:
+        - uid
+        - email
+        - emailVerified
+        - isAnonymous
+        - providerData
+        - stsTokenManager
+        - createdAt
+        - lastLoginAt
+        - apiKey
+      example:
+        uid: 9PxYKdW3sRfJgHmUnOlQ2xX7iTvAz1cE
+        email: name@email.com
+        emailVerified: true
+        isAnonymous: false
+        providerData:
+          - providerId: password
+            uid: name@email.com
+            displayName: null
+            email: name@email.com
+            phoneNumber: null
+            photoURL: null
+        stsTokenManager:
+          refreshToken: AMf-vBx89o8tBM5Qr_wpr63F-puasdfbVj7paHEtxVXcmvBrszAfJsZg1nkLanwRV9C3LJRO...fqSh
+          accessToken: eyJhbGciOiJSUzI1NiIsImtpICZ6ImE2YzYzNTNmMmEzZWNxNjg2NTA1MzBkMTVmNmM0Y2H0...QTXg
+          expirationTime: 1700713863736
+        createdAt: "1700710263291"
+        lastLoginAt: "1700710263291"
+        apiKey: pGxbTdQ1uAfiKs2Jyv9HlOoLzVcnDZaYeXhqU7wS
+        appName: "[DEFAULT]"
+    TokensSchema:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+        accessToken:
+          type: string
+        expirationTime:
+          type: number
+      required:
+        - refreshToken
+        - accessToken
+        - expirationTime

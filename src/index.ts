@@ -6,7 +6,7 @@ import router from "./routes";
 import ErrorHandler from "./middlewares/errorHandler";
 import TimeoutHandler from "./middlewares/timeoutHandler";
 import RateLimiter from "./middlewares/rateLimiter";
-import swaggerDocs from "./utils/swagger";
+import swaggerDocs from "./docs/swagger";
 import { json, urlencoded } from "body-parser";
 
 dotenv.config();
