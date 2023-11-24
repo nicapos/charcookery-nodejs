@@ -1,0 +1,43 @@
+name: Deploy master branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**' # Trigger the workflow when anything in the /src folder changes
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.9]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm ci
+
+    - name: Assume IAM Role and Configure AWS Credentials
+      id: assume-role
+      run: |
+        export AWS_TEMP_CREDS=$(aws sts assume-role --role-arn arn:aws:iam::account-id-with-role:role/role-name --role-session-name GitHubActions --output json)
+        echo "::add-mask::${AWS_TEMP_CREDS}"  # Mask the credentials in the logs
+        echo "AWS_ACCESS_KEY_ID=$(echo ${AWS_TEMP_CREDS} | jq -r '.Credentials.AccessKeyId')" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=$(echo ${AWS_TEMP_CREDS} | jq -r '.Credentials.SecretAccessKey')" >> $GITHUB_ENV
+        echo "AWS_SESSION_TOKEN=$(echo ${AWS_TEMP_CREDS} | jq -r '.Credentials.SessionToken')" >> $GITHUB_ENV
+
+    - name: Deploy with Serverless
+      uses: serverless/github-action@v3.2.0
+      with:
+        args: deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
