@@ -8,6 +8,7 @@ import {
 export const signInOperation: ZodOpenApiOperationObject = {
   summary: "Sign in with email and password",
   tags: ["auth"],
+  security: [],
   requestBody: {
     content: {
       "application/json": {
@@ -31,6 +32,7 @@ export const signInOperation: ZodOpenApiOperationObject = {
 export const createUserOperation: ZodOpenApiOperationObject = {
   summary: "Create a new user account",
   tags: ["user"],
+  security: [],
   requestBody: {
     content: {
       "application/json": {

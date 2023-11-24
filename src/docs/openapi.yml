@@ -11,6 +11,7 @@ paths:
   /api/:
     get:
       summary: Check API status
+      security: []
       responses:
         "200":
           description: API is up and running
@@ -19,6 +20,7 @@ paths:
       summary: Sign in with email and password
       tags:
         - auth
+      security: []
       requestBody:
         content:
           application/json:
@@ -50,6 +52,7 @@ paths:
       summary: Create a new user account
       tags:
         - user
+      security: []
       requestBody:
         content:
           application/json:
@@ -84,6 +87,7 @@ components:
         password:
           scopes: {}
           tokenUrl: /api/token
+      description: OAuth2 with Password Flow using email as the username
   schemas:
     UserSchema:
       type: object
