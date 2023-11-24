@@ -26,6 +26,15 @@ export const signInOperation: ZodOpenApiOperationObject = {
         },
       },
     },
+    "400": {
+      $ref: "#/components/responses/BadRequestResponse",
+    },
+    "422": {
+      $ref: "#/components/responses/ZodErrorResponse",
+    },
+    "500": {
+      $ref: "#/components/responses/InternalErrorResponse",
+    },
   },
 };
 
@@ -49,6 +58,15 @@ export const createUserOperation: ZodOpenApiOperationObject = {
           schema: FirebaseUserSchema,
         },
       },
+    },
+    "400": {
+      $ref: "#/components/responses/BadRequestResponse",
+    },
+    "422": {
+      $ref: "#/components/responses/ZodErrorResponse",
+    },
+    "500": {
+      $ref: "#/components/responses/InternalErrorResponse",
     },
   },
 };

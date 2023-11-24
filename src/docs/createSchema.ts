@@ -6,11 +6,16 @@ import dotenv from "dotenv";
 
 import { pingOperation } from "./operations/common";
 import { createUserOperation, signInOperation } from "./operations/user";
-import { FirebaseUserSchema, userTokensSchema } from "./types";
+import {
+  FirebaseUserSchema,
+  userTokensSchema,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ZodErrorResponse,
+  InternalErrorResponse,
+} from "./types";
 
 dotenv.config();
-
-import { SecurityRequirementObject } from "zod-openapi/lib-types/openapi3-ts/dist/oas30";
 
 const document = createDocument({
   openapi: "3.1.0",
@@ -24,6 +29,12 @@ const document = createDocument({
     schemas: {
       UserSchema: FirebaseUserSchema,
       TokensSchema: userTokensSchema,
+    },
+    responses: {
+      BadRequestResponse,
+      UnauthorizedResponse,
+      ZodErrorResponse,
+      InternalErrorResponse,
     },
     securitySchemes: {
       OAuth2PasswordBearer: {

@@ -7,5 +7,8 @@ export const pingOperation: ZodOpenApiOperationObject = {
     "200": {
       description: "API is up and running",
     },
+    "500": {
+      $ref: "#/components/responses/InternalErrorResponse",
+    },
   },
 };

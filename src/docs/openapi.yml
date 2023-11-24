@@ -15,6 +15,8 @@ paths:
       responses:
         "200":
           description: API is up and running
+        "500":
+          $ref: "#/components/responses/InternalErrorResponse"
   /api/token:
     post:
       summary: Sign in with email and password
@@ -47,6 +49,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserSchema"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "422":
+          $ref: "#/components/responses/ZodErrorResponse"
+        "500":
+          $ref: "#/components/responses/InternalErrorResponse"
   /api/user:
     post:
       summary: Create a new user account
@@ -77,6 +85,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserSchema"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "422":
+          $ref: "#/components/responses/ZodErrorResponse"
+        "500":
+          $ref: "#/components/responses/InternalErrorResponse"
   /api/recipe: {}
   /api/recipes: {}
 components:
@@ -189,3 +203,72 @@ components:
         - refreshToken
         - accessToken
         - expirationTime
+  responses:
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - name
+              - code
+              - message
+    UnauthorizedResponse:
+      description: Unauthorized. Log in to access this route.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+            required:
+              - message
+    ZodErrorResponse:
+      description: Response query/body validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              issues:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    message:
+                      type: string
+                    fatal:
+                      type: boolean
+                    path:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                    - code
+                    - message
+            required:
+              - name
+              - issues
+            example:
+              name: ZodError
+              issues:
+                - code: too_small
+                  message: String must contain at least 8 character(s)
+                  path:
+                    - password
+    InternalErrorResponse:
+      description: Internal server error
