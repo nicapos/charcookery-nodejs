@@ -38,6 +38,24 @@ export const signInOperation: ZodOpenApiOperationObject = {
   },
 };
 
+export const logoutOperation: ZodOpenApiOperationObject = {
+  summary: "Log out",
+  tags: ["auth"],
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  responses: {
+    "204": {
+      description: "Logged out successfully",
+    },
+    "500": {
+      $ref: "#/components/responses/InternalErrorResponse",
+    },
+  },
+};
+
 export const createUserOperation: ZodOpenApiOperationObject = {
   summary: "Create a new user account",
   tags: ["user"],

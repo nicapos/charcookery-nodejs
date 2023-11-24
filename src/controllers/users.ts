@@ -1,4 +1,5 @@
 import {
+  getAuth,
   UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -37,6 +38,16 @@ const usersController = {
         })
         .catch((err) => handleError(res, err));
     } else throw Error(`Unknown grant type (passed ${grant_type})`);
+  },
+
+  signOut: (req: Request, res: Response) => {
+    getAuth()
+      .signOut()
+      .then(() => {
+        res.status(204);
+        res.end();
+      })
+      .catch((err) => handleError(res, err));
   },
 
   updateUserProfile: async (req: Request, res: Response) => {

@@ -55,6 +55,18 @@ paths:
           $ref: "#/components/responses/ZodErrorResponse"
         "500":
           $ref: "#/components/responses/InternalErrorResponse"
+  /api/auth/logout:
+    post:
+      summary: Log out
+      tags:
+        - auth
+      security:
+        - OAuth2PasswordBearer: []
+      responses:
+        "204":
+          description: Logged out successfully
+        "500":
+          $ref: "#/components/responses/InternalErrorResponse"
   /api/user:
     post:
       summary: Create a new user account

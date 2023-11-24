@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/token", usersController.signIn);
+router.post("/auth/logout", requireSignIn, usersController.signOut);
 
 router.get("/user", requireSignIn, usersController.getAccountDetails);
 router.post("/user", usersController.createAccount);

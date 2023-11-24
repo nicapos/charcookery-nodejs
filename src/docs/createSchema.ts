@@ -5,7 +5,11 @@ import { createDocument } from "zod-openapi";
 import dotenv from "dotenv";
 
 import { pingOperation } from "./operations/common";
-import { createUserOperation, signInOperation } from "./operations/user";
+import {
+  createUserOperation,
+  logoutOperation,
+  signInOperation,
+} from "./operations/user";
 import { getCommunityRecipesOperation } from "./operations/recipes";
 import {
   RecipeSchema,
@@ -64,6 +68,9 @@ const document = createDocument({
     },
     "/api/token": {
       post: signInOperation,
+    },
+    "/api/auth/logout": {
+      post: logoutOperation,
     },
     "/api/user": {
       post: createUserOperation,
