@@ -31,9 +31,11 @@ const usersController = {
     } = TokenCredentialsSchema.parse(req.body);
 
     if (grant_type === "password") {
-      signInWithEmailAndPassword(auth, email, password).then((credentials) => {
-        res.status(201).json(credentials.user);
-      });
+      signInWithEmailAndPassword(auth, email, password)
+        .then((credentials) => {
+          res.status(201).json(credentials.user);
+        })
+        .catch((err) => handleError(res, err));
     } else throw Error(`Unknown grant type (passed ${grant_type})`);
   },
 
