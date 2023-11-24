@@ -1,6 +1,7 @@
 import { Router } from "express";
 import recipesController from "./controllers/recipes";
 import usersController from "./controllers/users";
+import { requireSignIn } from "./middlewares/auth";
 
 const router = Router();
 
@@ -10,18 +11,22 @@ router.get("/", (req, res) => {
 
 router.post("/token", usersController.signIn);
 
-router.get("/user", usersController.getAccountDetails);
+router.get("/user", requireSignIn, usersController.getAccountDetails);
 router.post("/user", usersController.createAccount);
-router.put("/user", usersController.updateUserProfile);
-router.patch("/user", usersController.updatePassword);
-router.delete("/user", usersController.deleteAccount);
+router.put("/user", requireSignIn, usersController.updateUserProfile);
+router.patch("/user", requireSignIn, usersController.updatePassword);
+router.delete("/user", requireSignIn, usersController.deleteAccount);
 
-router.get("/recipe/:id", recipesController.getRecipeById);
-router.post("/recipe", recipesController.addRecipe);
-router.patch("/recipe", recipesController.updateFavoriteStatus);
-router.delete("/recipe", recipesController.deleteRecipeById);
+router.get("/recipe/:id", requireSignIn, recipesController.getRecipeById);
+router.post("/recipe", requireSignIn, recipesController.addRecipe);
+router.patch("/recipe", requireSignIn, recipesController.updateFavoriteStatus);
+router.delete("/recipe", requireSignIn, recipesController.deleteRecipeById);
 
-router.get("/recipes", recipesController.getCommunityRecipes);
-router.get("/recipes/:userid", recipesController.getRecipesByUser);
+router.get("/recipes", requireSignIn, recipesController.getCommunityRecipes);
+router.get(
+  "/recipes/:userid",
+  requireSignIn,
+  recipesController.getRecipesByUser
+);
 
 export default router;
