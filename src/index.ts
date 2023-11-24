@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import serverless from "serverless-http";
 
 import router from "./routes";
 import ErrorHandler from "./middlewares/errorHandler";
@@ -28,3 +29,9 @@ app.use(ErrorHandler);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+/*
+  AWS Lambda Handler
+  Reference: https://www.serverless.com/blog/serverless-express-rest-api/
+*/
+export const handler = serverless(app);

@@ -36,6 +36,7 @@
     "express-rate-limit": "^7.1.4",
     "express-validator": "^7.0.1",
     "firebase": "^10.6.0",
+    "serverless-http": "^3.2.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "zod": "^3.22.4",
