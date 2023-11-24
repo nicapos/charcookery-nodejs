@@ -2,12 +2,7 @@ import { FirebaseError } from "@firebase/util";
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
 
-const ErrorHandler: ErrorRequestHandler = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export function handleError(res: Response, error: any) {
   let statusCode = 500; // Internal Server Error
   let responsePayload: any = {};
 
@@ -29,6 +24,15 @@ const ErrorHandler: ErrorRequestHandler = (
   }
 
   res.status(statusCode).json(responsePayload);
+}
+
+const ErrorHandler: ErrorRequestHandler = (
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  handleError(res, error);
 };
 
 export default ErrorHandler;

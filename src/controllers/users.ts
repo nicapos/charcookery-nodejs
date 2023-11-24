@@ -6,6 +6,7 @@ import {
 import { Request, Response } from "express";
 import { LoginCredentialsSchema, TokenCredentialsSchema } from "../docs/types";
 import { auth } from "../firebase";
+import { handleError } from "../middlewares/errorHandler";
 
 const usersController = {
   getAccountDetails: async (req: Request, res: Response) => {
@@ -15,11 +16,11 @@ const usersController = {
   createAccount: (req: Request, res: Response) => {
     const { email, password } = LoginCredentialsSchema.parse(req.body);
 
-    createUserWithEmailAndPassword(auth, email, password).then(
-      (credentials: UserCredential) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((credentials: UserCredential) => {
         res.status(201).json(credentials.user);
-      }
-    );
+      })
+      .catch((err) => handleError(res, err));
   },
 
   signIn: (req: Request, res: Response) => {
