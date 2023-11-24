@@ -92,7 +92,24 @@ paths:
         "500":
           $ref: "#/components/responses/InternalErrorResponse"
   /api/recipe: {}
-  /api/recipes: {}
+  /api/recipes:
+    get:
+      summary: Get community recipes
+      tags:
+        - recipes
+      security:
+        - OAuth2PasswordBearer: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalErrorResponse"
 components:
   securitySchemes:
     OAuth2PasswordBearer:
@@ -203,6 +220,45 @@ components:
         - refreshToken
         - accessToken
         - expirationTime
+    RecipeSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        category:
+          type: string
+        name:
+          type: string
+        notes:
+          type:
+            - string
+            - "null"
+        duration_mins:
+          type: number
+        cover_image:
+          type: string
+        instructions:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        source_url:
+          type:
+            - string
+            - "null"
+      required:
+        - id
+        - category
+        - name
+        - notes
+        - duration_mins
+        - cover_image
+        - instructions
+        - ingredients
+        - source_url
   responses:
     BadRequestResponse:
       description: Bad request

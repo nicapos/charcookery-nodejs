@@ -6,7 +6,9 @@ import dotenv from "dotenv";
 
 import { pingOperation } from "./operations/common";
 import { createUserOperation, signInOperation } from "./operations/user";
+import { getCommunityRecipesOperation } from "./operations/recipes";
 import {
+  RecipeSchema,
   FirebaseUserSchema,
   userTokensSchema,
   BadRequestResponse,
@@ -29,6 +31,7 @@ const document = createDocument({
     schemas: {
       UserSchema: FirebaseUserSchema,
       TokensSchema: userTokensSchema,
+      RecipeSchema,
     },
     responses: {
       BadRequestResponse,
@@ -66,7 +69,9 @@ const document = createDocument({
       post: createUserOperation,
     },
     "/api/recipe": {},
-    "/api/recipes": {},
+    "/api/recipes": {
+      get: getCommunityRecipesOperation,
+    },
   },
 });
 
