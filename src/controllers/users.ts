@@ -16,7 +16,7 @@ import {
   AccountType,
   EditableAccountSchema,
   RequestPasswordChangeSchema,
-} from "../schemas";
+} from "../schemas/users";
 
 const usersController = {
   getAccountDetails: (req: Request, res: Response) => {

@@ -4,7 +4,7 @@ import {
   LoginCredentialsSchema,
   TokenCredentialsSchema,
 } from "../types";
-import { RequestPasswordChangeSchema } from "../../schemas";
+import { RequestPasswordChangeSchema } from "../../schemas/users";
 
 export const signInOperation: ZodOpenApiOperationObject = {
   summary: "Sign in",

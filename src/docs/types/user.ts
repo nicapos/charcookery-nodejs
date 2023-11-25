@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AccountSchema, EditableAccountSchema } from "../../schemas";
+import { AccountSchema, EditableAccountSchema } from "../../schemas/users";
 
 const userInfoSchema = z.object({
   displayName: z.string().nullable(),
