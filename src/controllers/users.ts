@@ -127,21 +127,22 @@ const usersController = {
     const { email } = RequestPasswordChangeSchema.parse(req.body);
     const user = getAuth().currentUser;
 
+    if (user && email != getUserEmail(user)) {
+      res.status(403).json({
+        message: `Unauthorized. Provided email doesn't match account email (passed ${email}).`,
+      });
+      return;
+    }
+
     // Check if user is verified
     if (user && user.emailVerified) {
-      if (email == getUserEmail(user)) {
-        sendPasswordResetEmail(auth, email)
-          .then(() => {
-            res.status(200).json({
-              message: "Password reset link sent to your email.",
-            });
-          })
-          .catch((err) => handleError(res, err));
-      } else {
-        res.status(403).json({
-          message: `Unauthorized. Provided email doesn't match account email (passed ${email}).`,
-        });
-      }
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          res.status(200).json({
+            message: "Password reset link sent to your email.",
+          });
+        })
+        .catch((err) => handleError(res, err));
     } else {
       res.status(403).json({
         message: "Unauthorized. Verify your email first.",
