@@ -10,6 +10,11 @@ router.get("/", (req, res) => {
 });
 
 router.post("/token", usersController.signIn);
+router.post(
+  "/auth/verify",
+  requireSignIn,
+  usersController.sendVerificationEmail
+);
 router.post("/auth/logout", requireSignIn, usersController.signOut);
 
 router.get("/user", requireSignIn, usersController.getAccountDetails);

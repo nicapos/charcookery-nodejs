@@ -204,3 +204,40 @@ export const deleteAccountOperation: ZodOpenApiOperationObject = {
     },
   },
 };
+
+export const sendVerificationEmailOperation: ZodOpenApiOperationObject = {
+  summary: "Send verification email",
+  description:
+    "Send verification email to the active user's email (requires login)",
+  tags: ["auth"],
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  responses: {
+    "200": {
+      description: "Verification email sent",
+      content: {
+        "application/json": {
+          example: {
+            message: "Verification email sent",
+          },
+        },
+      },
+    },
+    "400": {
+      description: "Bad request",
+      content: {
+        "application/json": {
+          example: {
+            message: "Account is already verified",
+          },
+        },
+      },
+    },
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
+    },
+  },
+};

@@ -11,6 +11,7 @@ import {
   getAccountOperation,
   logoutOperation,
   requestPasswordOperation,
+  sendVerificationEmailOperation,
   signInOperation,
   updateProfileOperation,
 } from "./operations/user";
@@ -74,6 +75,9 @@ const document = createDocument({
     },
     "/api/token": {
       post: signInOperation,
+    },
+    "/api/auth/verify": {
+      post: sendVerificationEmailOperation,
     },
     "/api/auth/logout": {
       post: logoutOperation,

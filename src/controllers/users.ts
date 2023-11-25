@@ -1,15 +1,17 @@
 import {
+  User,
   getAuth,
   UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  sendEmailVerification,
 } from "@firebase/auth";
 import { Request, Response } from "express";
 import { LoginCredentialsSchema, TokenCredentialsSchema } from "../docs/types";
 import { auth, db } from "../firebase";
 import { handleError } from "../middlewares/errorHandler";
 import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
-import { User, sendPasswordResetEmail } from "firebase/auth";
 import {
   AccountType,
   EditableAccountSchema,
@@ -96,6 +98,25 @@ const usersController = {
       updateDoc(newDocumentRef, account)
         .then(() => res.status(200).json(account))
         .catch((err) => handleError(res, err));
+    } else {
+      // Middleware should prevent activeUser == null, but just in case:
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  },
+
+  sendVerificationEmail: (req: Request, res: Response) => {
+    const activeUser = getAuth().currentUser;
+
+    if (activeUser) {
+      if (!activeUser.emailVerified) {
+        sendEmailVerification(activeUser)
+          .then(() =>
+            res.status(200).json({ message: "Verification email sent" })
+          )
+          .catch((err) => handleError(res, err));
+      } else {
+        res.status(400).json({ message: "Account is already verified" });
+      }
     } else {
       // Middleware should prevent activeUser == null, but just in case:
       res.status(401).json({ message: "Unauthorized" });

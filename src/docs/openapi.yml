@@ -55,6 +55,29 @@ paths:
           $ref: "#/components/responses/ZodErrorResponse"
         "500":
           $ref: "#/components/responses/InternalErrorResponse"
+  /api/auth/verify:
+    post:
+      summary: Send verification email
+      description: Send verification email to the active user's email (requires login)
+      tags:
+        - auth
+      security:
+        - OAuth2PasswordBearer: []
+      responses:
+        "200":
+          description: Verification email sent
+          content:
+            application/json:
+              example:
+                message: Verification email sent
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                message: Account is already verified
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
   /api/auth/logout:
     post:
       summary: Log out
