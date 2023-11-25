@@ -15,7 +15,7 @@ router.post("/auth/logout", requireSignIn, usersController.signOut);
 router.get("/user", requireSignIn, usersController.getAccountDetails);
 router.post("/user", usersController.createAccount);
 router.put("/user", requireSignIn, usersController.updateUserProfile);
-router.patch("/user", requireSignIn, usersController.updatePassword);
+router.patch("/user", requireSignIn, usersController.requestPasswordChange);
 router.delete("/user", requireSignIn, usersController.deleteAccount);
 
 router.get("/recipe/:id", requireSignIn, recipesController.getRecipeById);
