@@ -1,12 +1,14 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
-import { LoginCredentialsSchema, TokenCredentialsSchema } from "../types";
 import {
-  EditableAccountSchema,
-  RequestPasswordChangeSchema,
-} from "../../schemas";
+  EditableAccountAPISchema,
+  LoginCredentialsSchema,
+  TokenCredentialsSchema,
+} from "../types";
+import { RequestPasswordChangeSchema } from "../../schemas";
 
 export const signInOperation: ZodOpenApiOperationObject = {
-  summary: "Sign in with email and password",
+  summary: "Sign in",
+  description: "Log-in using email (as username) and password",
   tags: ["auth"],
   security: [],
   requestBody: {
@@ -34,9 +36,6 @@ export const signInOperation: ZodOpenApiOperationObject = {
     "422": {
       $ref: "#/components/responses/ZodErrorResponse",
     },
-    "500": {
-      $ref: "#/components/responses/InternalErrorResponse",
-    },
   },
 };
 
@@ -59,7 +58,7 @@ export const logoutOperation: ZodOpenApiOperationObject = {
 };
 
 export const createUserOperation: ZodOpenApiOperationObject = {
-  summary: "Create a new user account",
+  summary: "Create account",
   tags: ["user"],
   security: [],
   requestBody: {
@@ -87,15 +86,12 @@ export const createUserOperation: ZodOpenApiOperationObject = {
     "422": {
       $ref: "#/components/responses/ZodErrorResponse",
     },
-    "500": {
-      $ref: "#/components/responses/InternalErrorResponse",
-    },
   },
 };
 
 export const getAccountOperation: ZodOpenApiOperationObject = {
-  summary: "Get account details",
-  description: "Get the active user's account details (requires login)",
+  summary: "Get user profile",
+  description: "Get the active user's profile details (requires login)",
   tags: ["user"],
   security: [
     {
@@ -121,7 +117,7 @@ export const getAccountOperation: ZodOpenApiOperationObject = {
 
 export const updateProfileOperation: ZodOpenApiOperationObject = {
   summary: "Update user profile",
-  description: "Update active user's account details (requires login)",
+  description: "Update active user's profile details (requires login)",
   tags: ["user"],
   security: [
     {
@@ -131,7 +127,7 @@ export const updateProfileOperation: ZodOpenApiOperationObject = {
   requestBody: {
     content: {
       "application/json": {
-        schema: EditableAccountSchema,
+        schema: EditableAccountAPISchema,
       },
     },
   },
@@ -156,7 +152,7 @@ export const requestPasswordOperation: ZodOpenApiOperationObject = {
   summary: "Request password change",
   tags: ["user"],
   description:
-    "Lets the active user request for a password change (requires login). An email will be sent to their email if successful.",
+    "Lets the active user request for a password change (requires login). An email will be sent to their email if successful. The email provided in the request must match the active user's email.",
   security: [
     {
       OAuth2PasswordBearer: [],

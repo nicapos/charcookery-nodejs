@@ -19,7 +19,8 @@ paths:
           $ref: "#/components/responses/InternalErrorResponse"
   /api/token:
     post:
-      summary: Sign in with email and password
+      summary: Sign in
+      description: Log-in using email (as username) and password
       tags:
         - auth
       security: []
@@ -53,8 +54,6 @@ paths:
           $ref: "#/components/responses/BadRequestResponse"
         "422":
           $ref: "#/components/responses/ZodErrorResponse"
-        "500":
-          $ref: "#/components/responses/InternalErrorResponse"
   /api/auth/verify:
     post:
       summary: Send verification email
@@ -92,8 +91,8 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
   /api/user:
     get:
-      summary: Get account details
-      description: Get the active user's account details (requires login)
+      summary: Get user profile
+      description: Get the active user's profile details (requires login)
       tags:
         - user
       security:
@@ -108,7 +107,7 @@ paths:
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
     post:
-      summary: Create a new user account
+      summary: Create account
       tags:
         - user
       security: []
@@ -140,11 +139,9 @@ paths:
           $ref: "#/components/responses/BadRequestResponse"
         "422":
           $ref: "#/components/responses/ZodErrorResponse"
-        "500":
-          $ref: "#/components/responses/InternalErrorResponse"
     put:
       summary: Update user profile
-      description: Update active user's account details (requires login)
+      description: Update active user's profile details (requires login)
       tags:
         - user
       security:
@@ -171,6 +168,10 @@ paths:
                 - name
                 - photo_url
                 - dietary_restrictions
+              example:
+                name: John Doe
+                photo_url: null
+                dietary_restrictions: null
       responses:
         "200":
           description: Updated successfully
@@ -185,7 +186,8 @@ paths:
       tags:
         - user
       description: Lets the active user request for a password change (requires
-        login). An email will be sent to their email if successful.
+        login). An email will be sent to their email if successful. The email
+        provided in the request must match the active user's email.
       security:
         - OAuth2PasswordBearer: []
       requestBody:
@@ -234,11 +236,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipeSchema"
+                $ref: "#/components/schemas/RecipeListSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-        "500":
-          $ref: "#/components/responses/InternalErrorResponse"
 components:
   securitySchemes:
     OAuth2PasswordBearer:
@@ -349,6 +349,36 @@ components:
         - refreshToken
         - accessToken
         - expirationTime
+    AccountSchema:
+      type: object
+      properties:
+        name:
+          type:
+            - string
+            - "null"
+        email:
+          type:
+            - string
+            - "null"
+          format: email
+        photo_url:
+          type:
+            - string
+            - "null"
+        dietary_restrictions:
+          type:
+            - string
+            - "null"
+      required:
+        - name
+        - email
+        - photo_url
+        - dietary_restrictions
+      example:
+        name: John Doe
+        email: name@example.com
+        photo_url: null
+        dietary_restrictions: Soy-free, Egg-free, low carb
     RecipeSchema:
       type: object
       properties:
@@ -388,36 +418,40 @@ components:
         - instructions
         - ingredients
         - source_url
-    AccountSchema:
-      type: object
-      properties:
-        name:
-          type:
-            - string
-            - "null"
-        email:
-          type:
-            - string
-            - "null"
-          format: email
-        photo_url:
-          type:
-            - string
-            - "null"
-        dietary_restrictions:
-          type:
-            - string
-            - "null"
-      required:
-        - name
-        - email
-        - photo_url
-        - dietary_restrictions
       example:
-        name: John Doe
-        email: name@example.com
-        photo_url: null
-        dietary_restrictions: Soy-free, Egg-free, low carb
+        id: 5Xc9WPnb2DfyhZA
+        category: Dessert
+        name: Chocolate Chip Cookies
+        notes: null
+        duration_mins: 30
+        cover_image: https://example.com/chocolate-chip-cookies.jpg
+        instructions:
+          - Preheat the oven to 350°F (175°C).
+          - In a large mixing bowl, cream together butter, sugar, and brown
+            sugar until smooth.
+          - Beat in eggs, one at a time, then stir in vanilla extract.
+          - In a separate bowl, combine flour, baking soda, and salt. Gradually
+            add the dry ingredients to the wet ingredients.
+          - Fold in chocolate chips.
+          - Drop rounded tablespoons of dough onto ungreased baking sheets.
+          - Bake for 10-12 minutes or until the edges are golden brown.
+          - Allow cookies to cool on the baking sheet for a few minutes before
+            transferring to a wire rack to cool completely.
+        ingredients:
+          - 1 cup butter, softened
+          - 1 cup white sugar
+          - 1 cup packed brown sugar
+          - 2 eggs
+          - 1 teaspoon vanilla extract
+          - 3 cups all-purpose flour
+          - 1 teaspoon baking soda
+          - 1/2 teaspoon salt
+          - 2 cups semisweet chocolate chips
+        source_url: https://example.com/chocolate-chip-cookies-recipe
+    RecipeListSchema:
+      type: array
+      items:
+        $ref: "#/components/schemas/RecipeSchema"
   responses:
     BadRequestResponse:
       description: Bad request

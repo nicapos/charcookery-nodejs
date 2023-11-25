@@ -14,16 +14,13 @@ export const getCommunityRecipesOperation: ZodOpenApiOperationObject = {
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/RecipeSchema",
+            $ref: "#/components/schemas/RecipeListSchema",
           },
         },
       },
     },
     "401": {
       $ref: "#/components/responses/UnauthorizedResponse",
-    },
-    "500": {
-      $ref: "#/components/responses/InternalErrorResponse",
     },
   },
 };

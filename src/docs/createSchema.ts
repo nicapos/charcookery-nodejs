@@ -18,6 +18,7 @@ import {
 import { getCommunityRecipesOperation } from "./operations/recipes";
 import {
   RecipeSchema,
+  RecipeListSchema,
   FirebaseUserSchema,
   userTokensSchema,
   BadRequestResponse,
@@ -41,8 +42,9 @@ const document = createDocument({
     schemas: {
       UserSchema: FirebaseUserSchema,
       TokensSchema: userTokensSchema,
-      RecipeSchema,
       AccountSchema: AccountAPISchema,
+      RecipeSchema,
+      RecipeListSchema,
     },
     responses: {
       BadRequestResponse,

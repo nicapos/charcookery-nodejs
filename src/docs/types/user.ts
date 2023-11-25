@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AccountSchema } from "../../schemas";
+import { AccountSchema, EditableAccountSchema } from "../../schemas";
 
 const userInfoSchema = z.object({
   displayName: z.string().nullable(),
@@ -76,5 +76,13 @@ export const AccountAPISchema = AccountSchema.openapi({
     email: "name@example.com",
     photo_url: null,
     dietary_restrictions: "Soy-free, Egg-free, low carb",
+  },
+});
+
+export const EditableAccountAPISchema = EditableAccountSchema.openapi({
+  example: {
+    name: "John Doe",
+    photo_url: null,
+    dietary_restrictions: null,
   },
 });
