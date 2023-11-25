@@ -36,7 +36,7 @@ jobs:
       run: npm run build
 
     - name: Copy openapi.yml to build folder
-      run: cp ./src/docs/openapi.yml /dist/
+      run: cp ./src/docs/openapi.yml dist
 
     - name: Package build to .zip
       run: zip aws_lambda_artifact.zip -r dist
