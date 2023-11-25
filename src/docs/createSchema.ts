@@ -17,7 +17,7 @@ import {
 } from "./operations/user";
 import { getCommunityRecipesOperation } from "./operations/recipes";
 import {
-  RecipeSchema,
+  RecipeAPISchema,
   RecipeListSchema,
   FirebaseUserSchema,
   userTokensSchema,
@@ -43,7 +43,7 @@ const document = createDocument({
       UserSchema: FirebaseUserSchema,
       TokensSchema: userTokensSchema,
       AccountSchema: AccountAPISchema,
-      RecipeSchema,
+      RecipeSchema: RecipeAPISchema,
       RecipeListSchema,
     },
     responses: {
