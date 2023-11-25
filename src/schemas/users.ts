@@ -18,3 +18,4 @@ export const RequestPasswordChangeSchema = z.object({
 });
 
 export type AccountType = z.infer<typeof AccountSchema>;
+export type EditableAccountType = z.infer<typeof EditableAccountSchema>;
