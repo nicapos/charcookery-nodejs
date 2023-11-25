@@ -65,9 +65,25 @@ paths:
       responses:
         "204":
           description: Logged out successfully
-        "500":
-          $ref: "#/components/responses/InternalErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
   /api/user:
+    get:
+      summary: Get account details
+      description: Get the active user's account details (requires login)
+      tags:
+        - user
+      security:
+        - OAuth2PasswordBearer: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
     post:
       summary: Create a new user account
       tags:
@@ -103,6 +119,84 @@ paths:
           $ref: "#/components/responses/ZodErrorResponse"
         "500":
           $ref: "#/components/responses/InternalErrorResponse"
+    put:
+      summary: Update user profile
+      description: Update active user's account details (requires login)
+      tags:
+        - user
+      security:
+        - OAuth2PasswordBearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type:
+                    - string
+                    - "null"
+                photo_url:
+                  type:
+                    - string
+                    - "null"
+                dietary_restrictions:
+                  type:
+                    - string
+                    - "null"
+              required:
+                - name
+                - photo_url
+                - dietary_restrictions
+      responses:
+        "200":
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    patch:
+      summary: Request password change
+      tags:
+        - user
+      description: Lets the active user request for a password change (requires
+        login). An email will be sent to their email if successful.
+      security:
+        - OAuth2PasswordBearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        "200":
+          description: Updated successfully
+          content:
+            application/json:
+              example:
+                message: Password reset link sent to your email.
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    delete:
+      summary: Delete account
+      description: Deletes the active user's account (requires login)
+      tags:
+        - user
+      security:
+        - OAuth2PasswordBearer: []
+      responses:
+        "204":
+          description: Account deleted successfully
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
   /api/recipe: {}
   /api/recipes:
     get:
@@ -271,6 +365,36 @@ components:
         - instructions
         - ingredients
         - source_url
+    AccountSchema:
+      type: object
+      properties:
+        name:
+          type:
+            - string
+            - "null"
+        email:
+          type:
+            - string
+            - "null"
+          format: email
+        photo_url:
+          type:
+            - string
+            - "null"
+        dietary_restrictions:
+          type:
+            - string
+            - "null"
+      required:
+        - name
+        - email
+        - photo_url
+        - dietary_restrictions
+      example:
+        name: John Doe
+        email: name@example.com
+        photo_url: null
+        dietary_restrictions: Soy-free, Egg-free, low carb
   responses:
     BadRequestResponse:
       description: Bad request

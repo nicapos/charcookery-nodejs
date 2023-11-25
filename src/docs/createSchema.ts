@@ -7,8 +7,12 @@ import dotenv from "dotenv";
 import { pingOperation } from "./operations/common";
 import {
   createUserOperation,
+  deleteAccountOperation,
+  getAccountOperation,
   logoutOperation,
+  requestPasswordOperation,
   signInOperation,
+  updateProfileOperation,
 } from "./operations/user";
 import { getCommunityRecipesOperation } from "./operations/recipes";
 import {
@@ -19,6 +23,7 @@ import {
   UnauthorizedResponse,
   ZodErrorResponse,
   InternalErrorResponse,
+  AccountAPISchema,
 } from "./types";
 
 dotenv.config();
@@ -36,6 +41,7 @@ const document = createDocument({
       UserSchema: FirebaseUserSchema,
       TokensSchema: userTokensSchema,
       RecipeSchema,
+      AccountSchema: AccountAPISchema,
     },
     responses: {
       BadRequestResponse,
@@ -73,7 +79,11 @@ const document = createDocument({
       post: logoutOperation,
     },
     "/api/user": {
+      get: getAccountOperation,
       post: createUserOperation,
+      put: updateProfileOperation,
+      patch: requestPasswordOperation,
+      delete: deleteAccountOperation,
     },
     "/api/recipe": {},
     "/api/recipes": {

@@ -1,9 +1,9 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
+import { LoginCredentialsSchema, TokenCredentialsSchema } from "../types";
 import {
-  FirebaseUserSchema,
-  LoginCredentialsSchema,
-  TokenCredentialsSchema,
-} from "../types";
+  EditableAccountSchema,
+  RequestPasswordChangeSchema,
+} from "../../schemas";
 
 export const signInOperation: ZodOpenApiOperationObject = {
   summary: "Sign in with email and password",
@@ -22,7 +22,9 @@ export const signInOperation: ZodOpenApiOperationObject = {
       description: "Successfully signed in",
       content: {
         "application/json": {
-          schema: FirebaseUserSchema,
+          schema: {
+            $ref: "#/components/schemas/UserSchema",
+          },
         },
       },
     },
@@ -50,8 +52,8 @@ export const logoutOperation: ZodOpenApiOperationObject = {
     "204": {
       description: "Logged out successfully",
     },
-    "500": {
-      $ref: "#/components/responses/InternalErrorResponse",
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
     },
   },
 };
@@ -73,7 +75,9 @@ export const createUserOperation: ZodOpenApiOperationObject = {
       description: "User account created successfully",
       content: {
         "application/json": {
-          schema: FirebaseUserSchema,
+          schema: {
+            $ref: "#/components/schemas/UserSchema",
+          },
         },
       },
     },
@@ -85,6 +89,118 @@ export const createUserOperation: ZodOpenApiOperationObject = {
     },
     "500": {
       $ref: "#/components/responses/InternalErrorResponse",
+    },
+  },
+};
+
+export const getAccountOperation: ZodOpenApiOperationObject = {
+  summary: "Get account details",
+  description: "Get the active user's account details (requires login)",
+  tags: ["user"],
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  responses: {
+    "200": {
+      description: "Successful response",
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/AccountSchema",
+          },
+        },
+      },
+    },
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
+    },
+  },
+};
+
+export const updateProfileOperation: ZodOpenApiOperationObject = {
+  summary: "Update user profile",
+  description: "Update active user's account details (requires login)",
+  tags: ["user"],
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: EditableAccountSchema,
+      },
+    },
+  },
+  responses: {
+    "200": {
+      description: "Updated successfully",
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/AccountSchema",
+          },
+        },
+      },
+    },
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
+    },
+  },
+};
+
+export const requestPasswordOperation: ZodOpenApiOperationObject = {
+  summary: "Request password change",
+  tags: ["user"],
+  description:
+    "Lets the active user request for a password change (requires login). An email will be sent to their email if successful.",
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: RequestPasswordChangeSchema,
+      },
+    },
+  },
+  responses: {
+    "200": {
+      description: "Updated successfully",
+      content: {
+        "application/json": {
+          example: {
+            message: "Password reset link sent to your email.",
+          },
+        },
+      },
+    },
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
+    },
+  },
+};
+
+export const deleteAccountOperation: ZodOpenApiOperationObject = {
+  summary: "Delete account",
+  description: "Deletes the active user's account (requires login)",
+  tags: ["user"],
+  security: [
+    {
+      OAuth2PasswordBearer: [],
+    },
+  ],
+  responses: {
+    "204": {
+      description: "Account deleted successfully",
+    },
+    "401": {
+      $ref: "#/components/responses/UnauthorizedResponse",
     },
   },
 };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AccountSchema } from "../../schemas";
 
 const userInfoSchema = z.object({
   displayName: z.string().nullable(),
@@ -67,4 +68,13 @@ export const TokenCredentialsSchema = z.object({
   grant_type: z.string(),
   username: z.string(),
   password: z.string().min(8).openapi({ example: "password" }),
+});
+
+export const AccountAPISchema = AccountSchema.openapi({
+  example: {
+    name: "John Doe",
+    email: "name@example.com",
+    photo_url: null,
+    dietary_restrictions: "Soy-free, Egg-free, low carb",
+  },
 });
