@@ -17,7 +17,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./src/docs/openapi.yml"],
+  apis: ["./**/*/openapi.yml"],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
