@@ -7,6 +7,7 @@ import {
   UserRecipeType,
 } from "../schemas/recipes";
 import RecipesService from "../services/RecipesService";
+import { UserParamSchema, IdParamSchema } from "../schemas/common";
 
 const recipesController = {
   getCommunityRecipes: (req: Request, res: Response) => {
@@ -18,7 +19,7 @@ const recipesController = {
 
   getRecipesByUser: async (req: Request, res: Response) => {
     // TODO: add filter by category, limit
-    const { userId } = req.params;
+    const { userId } = UserParamSchema.parse(req.params);
 
     RecipesService.getAllByUser(userId)
       .then((recipes) => res.status(200).json(recipes))
@@ -26,7 +27,7 @@ const recipesController = {
   },
 
   getRecipeById: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = IdParamSchema.parse(req.params);
 
     RecipesService.getById(id)
       .then((recipe: UserRecipeType) => res.status(200).json(recipe))
@@ -48,7 +49,7 @@ const recipesController = {
   },
 
   updateNotesFavorite: (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = IdParamSchema.parse(req.params);
     const { is_favorite, notes } = EditableRecipeSchema.parse(req.body);
 
     if (is_favorite != undefined) {
@@ -67,7 +68,7 @@ const recipesController = {
   },
 
   deleteRecipeById: (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = IdParamSchema.parse(req.params);
     const activeUser = getAuth().currentUser;
 
     if (!activeUser) {
