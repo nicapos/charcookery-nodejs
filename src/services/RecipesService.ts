@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { RecipeType, UserRecipeType } from "../schemas/recipes";
+import CategoryService from "./CategoryService";
 
 class RecipesService {
   /**
@@ -71,6 +72,15 @@ class RecipesService {
   ): Promise<UserRecipeType> {
     const recipesRef = collection(db, "recipes");
     const data = { ...item, user_id: userId };
+
+    const categoryExists = await CategoryService.checkExistsByTitle(
+      item.category,
+      userId
+    );
+
+    if (!categoryExists) {
+      await CategoryService.create(item.category, userId);
+    }
 
     const docRef = await addDoc(recipesRef, data);
     const recipe: UserRecipeType = { id: docRef.id, ...data };
