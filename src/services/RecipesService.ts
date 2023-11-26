@@ -20,7 +20,7 @@ class RecipesService {
    */
   static async getAllByUser(userId: string): Promise<UserRecipeType[]> {
     const recipesRef = collection(db, "recipes");
-    const q = query(recipesRef, where("userId", "==", userId));
+    const q = query(recipesRef, where("user_id", "==", userId));
 
     const snapshot = await getDocs(q);
     const recipes = snapshot.docs.map((doc) => ({
@@ -54,7 +54,7 @@ class RecipesService {
     const userDocRef = doc(collection(db, "recipes"), id);
 
     const snapshot = await getDoc(userDocRef);
-    const recipe = snapshot.data() as UserRecipeType;
+    const recipe = { id, ...snapshot.data() } as UserRecipeType;
 
     return recipe;
   }
