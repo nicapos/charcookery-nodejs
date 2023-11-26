@@ -18,6 +18,13 @@ const swaggerOptions = {
     ],
   },
   apis: ["./**/*/openapi.yml"],
+  plugins: [
+    {
+      wrapComponents: {
+        curl: () => () => null,
+      },
+    },
+  ],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
