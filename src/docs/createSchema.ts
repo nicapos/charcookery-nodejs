@@ -15,7 +15,14 @@ import {
   signInOperation,
   updateProfileOperation,
 } from "./operations/user";
-import { getCommunityRecipesOperation } from "./operations/recipes";
+import {
+  addRecipeOperation,
+  deleteRecipeOperation,
+  getCommunityRecipesOperation,
+  getRecipeByIdOperation,
+  getRecipesByUserOperation,
+  updateRecipeOperation,
+} from "./operations/recipes";
 import {
   RecipeAPISchema,
   RecipeListSchema,
@@ -26,6 +33,8 @@ import {
   ZodErrorResponse,
   InternalErrorResponse,
   AccountAPISchema,
+  UserRecipeAPISchema,
+  UserRecipeListSchema,
 } from "./types";
 
 dotenv.config();
@@ -45,6 +54,8 @@ const document = createDocument({
       AccountSchema: AccountAPISchema,
       RecipeSchema: RecipeAPISchema,
       RecipeListSchema,
+      UserRecipeSchema: UserRecipeAPISchema,
+      UserRecipeListSchema,
     },
     responses: {
       BadRequestResponse,
@@ -91,9 +102,19 @@ const document = createDocument({
       patch: requestPasswordOperation,
       delete: deleteAccountOperation,
     },
-    "/api/recipe": {},
+    "/api/recipe": {
+      post: addRecipeOperation,
+    },
+    "/api/recipe/{id}": {
+      get: getRecipeByIdOperation,
+      patch: updateRecipeOperation,
+      delete: deleteRecipeOperation,
+    },
     "/api/recipes": {
       get: getCommunityRecipesOperation,
+    },
+    "/api/recipes/{userId}": {
+      get: getRecipesByUserOperation,
     },
   },
 });

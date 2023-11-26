@@ -222,14 +222,181 @@ paths:
           description: Account deleted successfully
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-  /api/recipe: {}
+  /api/recipe:
+    post:
+      summary: Add recipe
+      description: Creates a new user recipe
+      tags:
+        - recipe
+      security:
+        - OAuth2PasswordBearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                name:
+                  type: string
+                notes:
+                  type:
+                    - string
+                    - "null"
+                duration_mins:
+                  type: number
+                cover_image:
+                  type: string
+                instructions:
+                  type: array
+                  items:
+                    type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: string
+                is_favorite:
+                  type: boolean
+                  default: false
+                user_id:
+                  type: string
+              required:
+                - category
+                - name
+                - notes
+                - duration_mins
+                - cover_image
+                - instructions
+                - ingredients
+              example:
+                category: Pasta Favorites
+                name: Spaghetti Bolognese
+                notes: Feel free to add extra vegetables for a healthier twist.
+                duration_mins: 45
+                cover_image: https://example.com/spaghetti-bolognese.jpg
+                instructions:
+                  - Cook spaghetti according to package instructions.
+                  - In a large skillet, heat olive oil over medium heat.
+                  - Add minced garlic and diced onions; sauté until softened.
+                  - Add ground beef and cook until browned. Drain excess fat.
+                  - Stir in tomato paste, crushed tomatoes, and Italian
+                    seasoning.
+                  - Simmer for 20-25 minutes, stirring occasionally.
+                  - Season with salt and pepper to taste.
+                  - Serve the Bolognese sauce over cooked spaghetti.
+                  - Garnish with grated Parmesan cheese and fresh basil.
+                ingredients:
+                  - 1 lb ground beef
+                  - 1 onion, diced
+                  - 2 cloves garlic, minced
+                  - 1 can (28 oz) crushed tomatoes
+                  - 2 tablespoons tomato paste
+                  - 2 teaspoons Italian seasoning
+                  - Salt and pepper to taste
+                  - 1 lb spaghetti
+                  - Grated Parmesan cheese and fresh basil for garnish
+                is_favorite: true
+                user_id: bKpgNZcltnSno9O
+      responses:
+        "201":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecipeSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+  "/api/recipe/{id}":
+    get:
+      summary: Get recipe
+      description: Fetches a recipe given its id
+      tags:
+        - recipe
+      security:
+        - OAuth2PasswordBearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecipeSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    patch:
+      summary: Update recipe
+      description: Updates the favorite status OR notes of a recipe. Recipe can only
+        by updated by its owner. Prioritizes updating `favorite_status` over
+        `notes`.
+      tags:
+        - recipe
+      security:
+        - OAuth2PasswordBearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_favorite:
+                  type: boolean
+                notes:
+                  type:
+                    - string
+                    - "null"
+              example:
+                notes: Feel free to add vegetables for a healthier twist.
+                is_favorite: false
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecipeSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    delete:
+      summary: Delete recipe
+      description: Deletes a recipe given its id. Recipe can only by deleted by its owner.
+      tags:
+        - recipe
+      security:
+        - OAuth2PasswordBearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecipeSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
   /api/recipes:
     get:
       summary: Get community recipes
       tags:
         - recipes
-      security:
-        - OAuth2PasswordBearer: []
+      security: []
       responses:
         "200":
           description: Successful response
@@ -237,6 +404,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RecipeListSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+  "/api/recipes/{userId}":
+    get:
+      summary: Get user recipes
+      description: Fetch all recipes by a user given their user id
+      tags:
+        - recipes
+      security: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecipeListSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
 components:
@@ -409,7 +598,6 @@ components:
             - string
             - "null"
       required:
-        - id
         - category
         - name
         - notes
@@ -452,6 +640,78 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/RecipeSchema"
+    UserRecipeSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        category:
+          type: string
+        name:
+          type: string
+        notes:
+          type:
+            - string
+            - "null"
+        duration_mins:
+          type: number
+        cover_image:
+          type: string
+        instructions:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        is_favorite:
+          type: boolean
+          default: false
+        user_id:
+          type: string
+      required:
+        - category
+        - name
+        - notes
+        - duration_mins
+        - cover_image
+        - instructions
+        - ingredients
+        - is_favorite
+      example:
+        id: 4Ky48xur4eI700E
+        category: Pasta Favorites
+        name: Spaghetti Bolognese
+        notes: Feel free to add extra vegetables for a healthier twist.
+        duration_mins: 45
+        cover_image: https://example.com/spaghetti-bolognese.jpg
+        instructions:
+          - Cook spaghetti according to package instructions.
+          - In a large skillet, heat olive oil over medium heat.
+          - Add minced garlic and diced onions; sauté until softened.
+          - Add ground beef and cook until browned. Drain excess fat.
+          - Stir in tomato paste, crushed tomatoes, and Italian seasoning.
+          - Simmer for 20-25 minutes, stirring occasionally.
+          - Season with salt and pepper to taste.
+          - Serve the Bolognese sauce over cooked spaghetti.
+          - Garnish with grated Parmesan cheese and fresh basil.
+        ingredients:
+          - 1 lb ground beef
+          - 1 onion, diced
+          - 2 cloves garlic, minced
+          - 1 can (28 oz) crushed tomatoes
+          - 2 tablespoons tomato paste
+          - 2 teaspoons Italian seasoning
+          - Salt and pepper to taste
+          - 1 lb spaghetti
+          - Grated Parmesan cheese and fresh basil for garnish
+        is_favorite: true
+        user_id: bKpgNZcltnSno9O
+    UserRecipeListSchema:
+      type: array
+      items:
+        $ref: "#/components/schemas/UserRecipeSchema"
   responses:
     BadRequestResponse:
       description: Bad request

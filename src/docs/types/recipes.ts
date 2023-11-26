@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { RecipeSchema } from "../../schemas/recipes";
+import {
+  EditableRecipeSchema,
+  RecipeSchema,
+  UserRecipeSchema,
+} from "../../schemas/recipes";
 
 export const RecipeAPISchema = RecipeSchema.openapi({
   example: {
@@ -35,3 +39,83 @@ export const RecipeAPISchema = RecipeSchema.openapi({
 });
 
 export const RecipeListSchema = z.array(RecipeAPISchema).openapi({});
+
+export const UserRecipeAPISchema = UserRecipeSchema.openapi({
+  example: {
+    id: "4Ky48xur4eI700E",
+    category: "Pasta Favorites",
+    name: "Spaghetti Bolognese",
+    notes: "Feel free to add extra vegetables for a healthier twist.",
+    duration_mins: 45,
+    cover_image: "https://example.com/spaghetti-bolognese.jpg",
+    instructions: [
+      "Cook spaghetti according to package instructions.",
+      "In a large skillet, heat olive oil over medium heat.",
+      "Add minced garlic and diced onions; sauté until softened.",
+      "Add ground beef and cook until browned. Drain excess fat.",
+      "Stir in tomato paste, crushed tomatoes, and Italian seasoning.",
+      "Simmer for 20-25 minutes, stirring occasionally.",
+      "Season with salt and pepper to taste.",
+      "Serve the Bolognese sauce over cooked spaghetti.",
+      "Garnish with grated Parmesan cheese and fresh basil.",
+    ],
+    ingredients: [
+      "1 lb ground beef",
+      "1 onion, diced",
+      "2 cloves garlic, minced",
+      "1 can (28 oz) crushed tomatoes",
+      "2 tablespoons tomato paste",
+      "2 teaspoons Italian seasoning",
+      "Salt and pepper to taste",
+      "1 lb spaghetti",
+      "Grated Parmesan cheese and fresh basil for garnish",
+    ],
+    is_favorite: true,
+    user_id: "bKpgNZcltnSno9O",
+  },
+});
+
+export const UserRecipeListSchema = z.array(UserRecipeAPISchema).openapi({});
+
+export const CreateRecipeSchema = UserRecipeAPISchema.omit({
+  id: true,
+}).openapi({
+  example: {
+    category: "Pasta Favorites",
+    name: "Spaghetti Bolognese",
+    notes: "Feel free to add extra vegetables for a healthier twist.",
+    duration_mins: 45,
+    cover_image: "https://example.com/spaghetti-bolognese.jpg",
+    instructions: [
+      "Cook spaghetti according to package instructions.",
+      "In a large skillet, heat olive oil over medium heat.",
+      "Add minced garlic and diced onions; sauté until softened.",
+      "Add ground beef and cook until browned. Drain excess fat.",
+      "Stir in tomato paste, crushed tomatoes, and Italian seasoning.",
+      "Simmer for 20-25 minutes, stirring occasionally.",
+      "Season with salt and pepper to taste.",
+      "Serve the Bolognese sauce over cooked spaghetti.",
+      "Garnish with grated Parmesan cheese and fresh basil.",
+    ],
+    ingredients: [
+      "1 lb ground beef",
+      "1 onion, diced",
+      "2 cloves garlic, minced",
+      "1 can (28 oz) crushed tomatoes",
+      "2 tablespoons tomato paste",
+      "2 teaspoons Italian seasoning",
+      "Salt and pepper to taste",
+      "1 lb spaghetti",
+      "Grated Parmesan cheese and fresh basil for garnish",
+    ],
+    is_favorite: true,
+    user_id: "bKpgNZcltnSno9O",
+  },
+});
+
+export const EditableRecipeAPISchema = EditableRecipeSchema.openapi({
+  example: {
+    notes: "Feel free to add vegetables for a healthier twist.",
+    is_favorite: false,
+  },
+});
