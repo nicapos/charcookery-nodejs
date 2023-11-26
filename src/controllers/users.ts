@@ -1,11 +1,13 @@
 import {
   User,
-  getAuth,
   UserCredential,
+  getAuth,
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
+  setPersistence,
 } from "@firebase/auth";
 import { Request, Response } from "express";
 import { LoginCredentialsSchema, TokenCredentialsSchema } from "../docs/types";
@@ -54,8 +56,12 @@ const usersController = {
     } = TokenCredentialsSchema.parse(req.body);
 
     if (grant_type === "password") {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(({ user }) => res.status(201).json(user))
+      setPersistence(auth, browserLocalPersistence)
+        .then(() =>
+          signInWithEmailAndPassword(getAuth(), email, password)
+            .then(({ user }) => res.status(201).json(user))
+            .catch((err) => handleError(res, err))
+        )
         .catch((err) => handleError(res, err));
     } else throw Error(`Unknown grant type (passed ${grant_type})`);
   },
