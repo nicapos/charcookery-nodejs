@@ -24,15 +24,15 @@ router.patch("/user", requireSignIn, usersController.requestPasswordChange);
 router.delete("/user", requireSignIn, usersController.deleteAccount);
 
 router.get("/recipe/:id", requireSignIn, recipesController.getRecipeById);
-router.post("/recipe", requireSignIn, recipesController.addRecipe);
-router.patch("/recipe", requireSignIn, recipesController.updateFavoriteStatus);
-router.delete("/recipe", requireSignIn, recipesController.deleteRecipeById);
-
-router.get("/recipes", requireSignIn, recipesController.getCommunityRecipes);
-router.get(
-  "/recipes/:userid",
+router.patch(
+  "/recipe/:id",
   requireSignIn,
-  recipesController.getRecipesByUser
+  recipesController.updateNotesFavorite
 );
+router.delete("/recipe/:id", requireSignIn, recipesController.deleteRecipeById);
+router.post("/recipe", requireSignIn, recipesController.addRecipe);
+
+router.get("/recipes", recipesController.getCommunityRecipes);
+router.get("/recipes/:userId", recipesController.getRecipesByUser);
 
 export default router;
