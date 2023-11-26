@@ -4,45 +4,24 @@ import { stringify } from "yaml";
 import { createDocument } from "zod-openapi";
 import dotenv from "dotenv";
 
-import { pingOperation } from "./operations/common";
-import {
-  createUserOperation,
-  deleteAccountOperation,
-  getAccountOperation,
-  logoutOperation,
-  requestPasswordOperation,
-  sendVerificationEmailOperation,
-  signInOperation,
-  updateProfileOperation,
-} from "./operations/user";
-import {
-  addRecipeOperation,
-  deleteRecipeOperation,
-  getCommunityRecipesOperation,
-  getRecipeByIdOperation,
-  getRecipesByUserOperation,
-  updateRecipeOperation,
-} from "./operations/recipes";
 import {
   RecipeAPISchema,
-  RecipeListSchema,
   FirebaseUserSchema,
-  userTokensSchema,
+  AccountAPISchema,
+  UserRecipeAPISchema,
+} from "./types";
+import {
   BadRequestResponse,
   UnauthorizedResponse,
   ZodErrorResponse,
   InternalErrorResponse,
-  AccountAPISchema,
-  UserRecipeAPISchema,
-  UserRecipeListSchema,
-} from "./types";
-import { CategoryAPISchema, CategoryListSchema } from "./types/categories";
-import {
-  addCategoryOperation,
-  deleteCategoryByIdOperation,
-  getCategoriesByUserOperation,
-  getCategoryByIdOperation,
-} from "./operations/category";
+} from "./types/responses";
+import { CategoryAPISchema } from "./types/categories";
+import AuthOperations from "./operations/auth";
+import CategoryOperations from "./operations/category";
+import CommonOperations from "./operations/common";
+import RecipeOperations from "./operations/recipes";
+import UserOperations from "./operations/user";
 
 dotenv.config();
 
@@ -57,14 +36,10 @@ const document = createDocument({
   components: {
     schemas: {
       UserSchema: FirebaseUserSchema,
-      TokensSchema: userTokensSchema,
       AccountSchema: AccountAPISchema,
       RecipeSchema: RecipeAPISchema,
-      RecipeListSchema,
       UserRecipeSchema: UserRecipeAPISchema,
-      UserRecipeListSchema,
       CategorySchema: CategoryAPISchema,
-      CategoryListSchema,
     },
     responses: {
       BadRequestResponse,
@@ -93,47 +68,47 @@ const document = createDocument({
   ],
   paths: {
     "/api/": {
-      get: pingOperation,
+      get: CommonOperations.get,
     },
     "/api/token": {
-      post: signInOperation,
+      post: AuthOperations.postIn,
     },
     "/api/auth/verify": {
-      post: sendVerificationEmailOperation,
+      post: AuthOperations.postVerify,
     },
     "/api/auth/logout": {
-      post: logoutOperation,
+      post: AuthOperations.postOut,
     },
     "/api/user": {
-      get: getAccountOperation,
-      post: createUserOperation,
-      put: updateProfileOperation,
-      patch: requestPasswordOperation,
-      delete: deleteAccountOperation,
+      get: UserOperations.get,
+      post: UserOperations.post,
+      put: UserOperations.put,
+      patch: UserOperations.patch,
+      delete: UserOperations.delete,
     },
     "/api/recipe": {
-      post: addRecipeOperation,
+      post: RecipeOperations.post,
     },
     "/api/recipe/{id}": {
-      get: getRecipeByIdOperation,
-      patch: updateRecipeOperation,
-      delete: deleteRecipeOperation,
+      get: RecipeOperations.getById,
+      patch: RecipeOperations.patch,
+      delete: RecipeOperations.delete,
     },
     "/api/recipes": {
-      get: getCommunityRecipesOperation,
+      get: RecipeOperations.getCommunity,
     },
     "/api/recipes/{userId}": {
-      get: getRecipesByUserOperation,
+      get: RecipeOperations.getByUser,
     },
     "/category": {
-      post: addCategoryOperation,
+      post: CategoryOperations.post,
     },
     "/category/{id}": {
-      get: getCategoryByIdOperation,
-      delete: deleteCategoryByIdOperation,
+      get: CategoryOperations.getById,
+      delete: CategoryOperations.delete,
     },
     "/categories/{userId}": {
-      get: getCategoriesByUserOperation,
+      get: CategoryOperations.getByUser,
     },
   },
 });

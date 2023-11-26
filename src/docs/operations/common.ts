@@ -1,6 +1,6 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
 
-export const pingOperation: ZodOpenApiOperationObject = {
+const pingOperation: ZodOpenApiOperationObject = {
   summary: "Check API status",
   security: [],
   responses: {
@@ -11,4 +11,8 @@ export const pingOperation: ZodOpenApiOperationObject = {
       $ref: "#/components/responses/InternalErrorResponse",
     },
   },
+};
+
+export default {
+  get: pingOperation,
 };

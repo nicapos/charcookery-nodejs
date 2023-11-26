@@ -1,7 +1,12 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
-import { CreateRecipeSchema, EditableRecipeAPISchema } from "../types";
+import {
+  CreateRecipeSchema,
+  EditableRecipeAPISchema,
+  RecipeListSchema,
+  UserRecipeListSchema,
+} from "../types";
 
-export const getCommunityRecipesOperation: ZodOpenApiOperationObject = {
+const getCommunityRecipesOperation: ZodOpenApiOperationObject = {
   summary: "Get community recipes",
   tags: ["recipes"],
   security: [],
@@ -10,9 +15,7 @@ export const getCommunityRecipesOperation: ZodOpenApiOperationObject = {
       description: "Successful response",
       content: {
         "application/json": {
-          schema: {
-            $ref: "#/components/schemas/RecipeListSchema",
-          },
+          schema: RecipeListSchema,
         },
       },
     },
@@ -22,7 +25,7 @@ export const getCommunityRecipesOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const getRecipesByUserOperation: ZodOpenApiOperationObject = {
+const getRecipesByUserOperation: ZodOpenApiOperationObject = {
   summary: "Get user recipes",
   description: "Fetch all recipes by a user given their user id",
   tags: ["recipes"],
@@ -42,9 +45,7 @@ export const getRecipesByUserOperation: ZodOpenApiOperationObject = {
       description: "Successful response",
       content: {
         "application/json": {
-          schema: {
-            $ref: "#/components/schemas/UserRecipeListSchema",
-          },
+          schema: UserRecipeListSchema,
         },
       },
     },
@@ -54,7 +55,7 @@ export const getRecipesByUserOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const getRecipeByIdOperation: ZodOpenApiOperationObject = {
+const getRecipeByIdOperation: ZodOpenApiOperationObject = {
   summary: "Get recipe",
   description: "Fetches a recipe given its id",
   tags: ["recipe"],
@@ -90,7 +91,7 @@ export const getRecipeByIdOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const addRecipeOperation: ZodOpenApiOperationObject = {
+const addRecipeOperation: ZodOpenApiOperationObject = {
   summary: "Add recipe",
   description: "Creates a new user recipe",
   tags: ["recipe"],
@@ -123,7 +124,7 @@ export const addRecipeOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const updateRecipeOperation: ZodOpenApiOperationObject = {
+const updateRecipeOperation: ZodOpenApiOperationObject = {
   summary: "Update recipe",
   description:
     "Updates the favorite status OR notes of a recipe. Recipe can only by updated by its owner. Prioritizes updating `favorite_status` over `notes`.",
@@ -167,7 +168,7 @@ export const updateRecipeOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const deleteRecipeOperation: ZodOpenApiOperationObject = {
+const deleteRecipeOperation: ZodOpenApiOperationObject = {
   summary: "Delete recipe",
   description:
     "Deletes a recipe given its id. Recipe can only by deleted by its owner.",
@@ -202,4 +203,13 @@ export const deleteRecipeOperation: ZodOpenApiOperationObject = {
       $ref: "#/components/responses/UnauthorizedResponse",
     },
   },
+};
+
+export default {
+  post: addRecipeOperation,
+  getById: getRecipeByIdOperation,
+  getByUser: getRecipesByUserOperation,
+  getCommunity: getCommunityRecipesOperation,
+  patch: updateRecipeOperation,
+  delete: deleteRecipeOperation,
 };

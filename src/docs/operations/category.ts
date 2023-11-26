@@ -1,7 +1,7 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
-import { CreateCategorySchema } from "../types/categories";
+import { CategoryListSchema, CreateCategorySchema } from "../types/categories";
 
-export const addCategoryOperation: ZodOpenApiOperationObject = {
+const addCategoryOperation: ZodOpenApiOperationObject = {
   summary: "Add category",
   description: "Creates a new user category",
   tags: ["category"],
@@ -34,7 +34,7 @@ export const addCategoryOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const getCategoriesByUserOperation: ZodOpenApiOperationObject = {
+const getCategoriesByUserOperation: ZodOpenApiOperationObject = {
   summary: "Get user categories",
   description: "Fetch all categories by a user given their user id",
   tags: ["categories"],
@@ -54,9 +54,7 @@ export const getCategoriesByUserOperation: ZodOpenApiOperationObject = {
       description: "Successful response",
       content: {
         "application/json": {
-          schema: {
-            $ref: "#/components/schemas/CategoryListSchema",
-          },
+          schema: CategoryListSchema,
         },
       },
     },
@@ -66,7 +64,7 @@ export const getCategoriesByUserOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const getCategoryByIdOperation: ZodOpenApiOperationObject = {
+const getCategoryByIdOperation: ZodOpenApiOperationObject = {
   summary: "Get category",
   description: "Fetches a category given its id",
   tags: ["category"],
@@ -102,7 +100,7 @@ export const getCategoryByIdOperation: ZodOpenApiOperationObject = {
   },
 };
 
-export const deleteCategoryByIdOperation: ZodOpenApiOperationObject = {
+const deleteCategoryByIdOperation: ZodOpenApiOperationObject = {
   summary: "Delete category",
   description:
     "Deletes a category given its id. Category can only by deleted by its owner.",
@@ -137,4 +135,11 @@ export const deleteCategoryByIdOperation: ZodOpenApiOperationObject = {
       $ref: "#/components/responses/UnauthorizedResponse",
     },
   },
+};
+
+export default {
+  post: addCategoryOperation,
+  getByUser: getCategoriesByUserOperation,
+  getById: getCategoryByIdOperation,
+  delete: deleteCategoryByIdOperation,
 };

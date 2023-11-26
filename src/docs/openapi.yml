@@ -403,7 +403,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipeListSchema"
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecipeSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
   "/api/recipes/{userId}":
@@ -425,7 +427,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserRecipeListSchema"
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserRecipeSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
   /category:
@@ -523,7 +527,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CategoryListSchema"
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategorySchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
 components:
@@ -584,7 +590,18 @@ components:
               - providerId
               - uid
         stsTokenManager:
-          $ref: "#/components/schemas/TokensSchema"
+          type: object
+          properties:
+            refreshToken:
+              type: string
+            accessToken:
+              type: string
+            expirationTime:
+              type: number
+          required:
+            - refreshToken
+            - accessToken
+            - expirationTime
         createdAt:
           type: string
         lastLoginAt:
@@ -623,19 +640,6 @@ components:
         lastLoginAt: "1700710263291"
         apiKey: pGxbTdQ1uAfiKs2Jyv9HlOoLzVcnDZaYeXhqU7wS
         appName: "[DEFAULT]"
-    TokensSchema:
-      type: object
-      properties:
-        refreshToken:
-          type: string
-        accessToken:
-          type: string
-        expirationTime:
-          type: number
-      required:
-        - refreshToken
-        - accessToken
-        - expirationTime
     AccountSchema:
       type: object
       properties:
@@ -734,10 +738,6 @@ components:
           - 1/2 teaspoon salt
           - 2 cups semisweet chocolate chips
         source_url: https://example.com/chocolate-chip-cookies-recipe
-    RecipeListSchema:
-      type: array
-      items:
-        $ref: "#/components/schemas/RecipeSchema"
     UserRecipeSchema:
       type: object
       properties:
@@ -806,10 +806,6 @@ components:
           - Grated Parmesan cheese and fresh basil for garnish
         is_favorite: true
         user_id: bKpgNZcltnSno9O
-    UserRecipeListSchema:
-      type: array
-      items:
-        $ref: "#/components/schemas/UserRecipeSchema"
     CategorySchema:
       type: object
       properties:
@@ -827,10 +823,6 @@ components:
         id: pONJ4ETD5iu3sQE
         title: Category A
         user_id: 9PxYKdW3sRfJgHmUnOlQ2xX7iTvAz1cE
-    CategoryListSchema:
-      type: array
-      items:
-        $ref: "#/components/schemas/CategorySchema"
   responses:
     BadRequestResponse:
       description: Bad request
