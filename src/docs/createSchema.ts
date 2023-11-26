@@ -36,6 +36,13 @@ import {
   UserRecipeAPISchema,
   UserRecipeListSchema,
 } from "./types";
+import { CategoryAPISchema, CategoryListSchema } from "./types/categories";
+import {
+  addCategoryOperation,
+  deleteCategoryByIdOperation,
+  getCategoriesByUserOperation,
+  getCategoryByIdOperation,
+} from "./operations/category";
 
 dotenv.config();
 
@@ -56,6 +63,8 @@ const document = createDocument({
       RecipeListSchema,
       UserRecipeSchema: UserRecipeAPISchema,
       UserRecipeListSchema,
+      CategorySchema: CategoryAPISchema,
+      CategoryListSchema,
     },
     responses: {
       BadRequestResponse,
@@ -115,6 +124,16 @@ const document = createDocument({
     },
     "/api/recipes/{userId}": {
       get: getRecipesByUserOperation,
+    },
+    "/category": {
+      post: addCategoryOperation,
+    },
+    "/category/{id}": {
+      get: getCategoryByIdOperation,
+      delete: deleteCategoryByIdOperation,
+    },
+    "/categories/{userId}": {
+      get: getCategoriesByUserOperation,
     },
   },
 });

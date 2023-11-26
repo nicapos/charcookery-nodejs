@@ -428,6 +428,104 @@ paths:
                 $ref: "#/components/schemas/UserRecipeListSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
+  /category:
+    post:
+      summary: Add category
+      description: Creates a new user category
+      tags:
+        - category
+      security:
+        - OAuth2PasswordBearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 4
+              required:
+                - title
+              example:
+                title: Category A
+      responses:
+        "201":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategorySchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+  "/category/{id}":
+    get:
+      summary: Get category
+      description: Fetches a category given its id
+      tags:
+        - category
+      security:
+        - OAuth2PasswordBearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategorySchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    delete:
+      summary: Delete category
+      description: Deletes a category given its id. Category can only by deleted by
+        its owner.
+      tags:
+        - category
+      security:
+        - OAuth2PasswordBearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategorySchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+  "/categories/{userId}":
+    get:
+      summary: Get user categories
+      description: Fetch all categories by a user given their user id
+      tags:
+        - categories
+      security: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryListSchema"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
 components:
   securitySchemes:
     OAuth2PasswordBearer:
@@ -712,6 +810,27 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/UserRecipeSchema"
+    CategorySchema:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          minLength: 4
+        user_id:
+          type: string
+      required:
+        - title
+        - user_id
+      example:
+        id: pONJ4ETD5iu3sQE
+        title: Category A
+        user_id: 9PxYKdW3sRfJgHmUnOlQ2xX7iTvAz1cE
+    CategoryListSchema:
+      type: array
+      items:
+        $ref: "#/components/schemas/CategorySchema"
   responses:
     BadRequestResponse:
       description: Bad request
