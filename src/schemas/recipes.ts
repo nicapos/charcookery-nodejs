@@ -22,5 +22,22 @@ export const EditableRecipeSchema = z.object({
   notes: z.string().nullable().optional(),
 });
 
+export const RecipesFiltersSchema = z.object({
+  q: z.string().optional(),
+  is_favorite: z
+    .string()
+    .transform((value) =>
+      value !== undefined ? value.toLowerCase() === "true" : undefined
+    )
+    .or(z.boolean())
+    .optional(),
+  category: z.string().optional(),
+  max_time: z
+    .string()
+    .transform((value) => (value ? parseInt(value, 10) : undefined))
+    .optional(),
+});
+
 export type RecipeType = z.infer<typeof RecipeSchema>;
 export type UserRecipeType = z.infer<typeof UserRecipeSchema>;
+export type RecipeFiltersType = z.infer<typeof RecipesFiltersSchema>;

@@ -39,6 +39,34 @@ const getRecipesByUserOperation: ZodOpenApiOperationObject = {
       },
       required: true,
     },
+    {
+      in: "query",
+      name: "q",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "is_favorite",
+      schema: {
+        type: "boolean",
+      },
+    },
+    {
+      in: "query",
+      name: "category",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "max_time",
+      schema: {
+        type: "number",
+      },
+    },
   ],
   responses: {
     "200": {

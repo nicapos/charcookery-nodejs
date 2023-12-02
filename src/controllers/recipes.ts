@@ -3,6 +3,7 @@ import { handleError } from "../middlewares/errorHandler";
 import { getAuth } from "firebase/auth";
 import {
   EditableRecipeSchema,
+  RecipesFiltersSchema,
   UserRecipeSchema,
   UserRecipeType,
 } from "../schemas/recipes";
@@ -18,10 +19,12 @@ const recipesController = {
   },
 
   getRecipesByUser: async (req: Request, res: Response) => {
-    // TODO: add filter by category, limit
+    // TODO: add limit, pagination
     const { userId } = UserParamSchema.parse(req.params);
+    const query_filters = RecipesFiltersSchema.parse(req.query);
+    const filters = RecipesService.buildFilters(query_filters);
 
-    RecipesService.getAllByUser(userId)
+    RecipesService.getAllByUser(userId, filters)
       .then((recipes) => res.status(200).json(recipes))
       .catch((err) => handleError(res, err));
   },

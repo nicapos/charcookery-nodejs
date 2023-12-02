@@ -1,5 +1,8 @@
 import {
+  QueryConstraint,
+  QueryFieldFilterConstraint,
   addDoc,
+  and,
   collection,
   deleteDoc,
   doc,
@@ -10,7 +13,11 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { RecipeType, UserRecipeType } from "../schemas/recipes";
+import {
+  RecipeFiltersType,
+  RecipeType,
+  UserRecipeType,
+} from "../schemas/recipes";
 import CategoryService from "./CategoryService";
 
 class RecipesService {
@@ -19,9 +26,17 @@ class RecipesService {
    * @param userId
    * @returns List of recipes associated with the user
    */
-  static async getAllByUser(userId: string): Promise<UserRecipeType[]> {
+  static async getAllByUser(
+    userId: string,
+    filters?: QueryFieldFilterConstraint[]
+  ): Promise<UserRecipeType[]> {
     const recipesRef = collection(db, "recipes");
-    const q = query(recipesRef, where("user_id", "==", userId));
+
+    const userFilter = where("user_id", "==", userId);
+    const allFilters = filters ? [userFilter, ...filters] : [userFilter];
+    const queryFilter = and(...allFilters);
+
+    const q = query(recipesRef, queryFilter);
 
     const snapshot = await getDocs(q);
     const recipes = snapshot.docs.map((doc) => ({
@@ -139,6 +154,27 @@ class RecipesService {
   static async doesUserOwnRecipe(userId: string, recipeId: string) {
     const recipe = await this.getById(recipeId);
     return recipe.user_id == userId;
+  }
+
+  static buildFilters(
+    filters: RecipeFiltersType
+  ): QueryFieldFilterConstraint[] {
+    var queryFilters: QueryFieldFilterConstraint[] = [];
+
+    if (filters.is_favorite) {
+      queryFilters.push(where("is_favorite", "==", filters.is_favorite));
+    }
+    if (filters.category) {
+      queryFilters.push(where("category", "==", filters.category));
+    }
+    if (filters.max_time) {
+      queryFilters.push(where("duration_mins", "<=", filters.max_time));
+    }
+    if (filters.q) {
+      // TODO: Add query to search if titles contain substring
+    }
+
+    return queryFilters;
   }
 }
 
