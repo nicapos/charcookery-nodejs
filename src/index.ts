@@ -6,7 +6,6 @@ import serverless from "serverless-http";
 import router from "./routes";
 import ErrorHandler from "./middlewares/errorHandler";
 import TimeoutHandler from "./middlewares/timeoutHandler";
-import RateLimiter from "./middlewares/rateLimiter";
 import swaggerDocs from "./docs/swagger";
 import { json, urlencoded } from "body-parser";
 
@@ -19,10 +18,10 @@ app.use(urlencoded({ extended: true }));
 app.use(json());
 app.use(cors());
 app.use("/api", router);
+app.enable("trust proxy");
 swaggerDocs(app, port);
 
 // MIDDLEWARES
-app.use(RateLimiter);
 app.use(TimeoutHandler);
 app.use(ErrorHandler);
 
