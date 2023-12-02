@@ -70,6 +70,9 @@ const document = createDocument({
     "/api/": {
       get: CommonOperations.get,
     },
+    "/api/upload": {
+      post: CommonOperations.post,
+    },
     "/api/token": {
       post: AuthOperations.postIn,
     },

@@ -2,12 +2,16 @@
 import { Router } from "express";
 import recipesController from "./controllers/recipes";
 import usersController from "./controllers/users";
-import { requireSignIn } from "./middlewares/auth";
 import categoriesController from "./controllers/categories";
+import miscController from "./controllers/misc";
+
+import { requireSignIn } from "./middlewares/auth";
+import multerMiddleware from "./middlewares/imageHandler";
 
 const router = Router();
 
-router.get("/", (req, res) => { res.send("API is up and running!") });
+router.get("/", miscController.ping);
+router.post("/upload", requireSignIn, multerMiddleware, miscController.uploadImage);
 
 router.post("/token", usersController.signIn);
 router.post("/auth/verify", requireSignIn, usersController.sendVerificationEmail);
