@@ -38,6 +38,10 @@ export const RecipesFiltersSchema = z.object({
     .optional(),
 });
 
+export const CommunityRecipesFilterSchema = z.object({
+  category: z.string().optional(),
+});
+
 export type RecipeType = z.infer<typeof RecipeSchema>;
 export type UserRecipeType = z.infer<typeof UserRecipeSchema>;
 export type RecipeFiltersType = z.infer<typeof RecipesFiltersSchema>;

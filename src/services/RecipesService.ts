@@ -51,8 +51,15 @@ class RecipesService {
    * Retrieves a list of all community recipes.
    * @returns List of all community recipes
    */
-  static async getAllCommunity(): Promise<RecipeType[]> {
-    const snapshot = await getDocs(collection(db, "community_recipes"));
+  static async getAllCommunity(
+    category?: string | null
+  ): Promise<RecipeType[]> {
+    const communityRecipesRef = collection(db, "community_recipes");
+    const q = category
+      ? query(communityRecipesRef, where("category", "==", category))
+      : communityRecipesRef;
+
+    const snapshot = await getDocs(q);
     const recipes = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as RecipeType),

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../middlewares/errorHandler";
 import { getAuth } from "firebase/auth";
 import {
+  CommunityRecipesFilterSchema,
   EditableRecipeSchema,
   RecipesFiltersSchema,
   UserRecipeSchema,
@@ -13,7 +14,9 @@ import { UserParamSchema, IdParamSchema } from "../schemas/common";
 const recipesController = {
   getCommunityRecipes: (req: Request, res: Response) => {
     // TODO: Group community recipes by category OR add filter by category
-    RecipesService.getAllCommunity()
+    const { category } = CommunityRecipesFilterSchema.parse(req.query);
+
+    RecipesService.getAllCommunity(category)
       .then((recipes) => res.status(200).json(recipes))
       .catch((err) => handleError(res, err));
   },
