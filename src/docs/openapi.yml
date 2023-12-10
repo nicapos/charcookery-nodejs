@@ -470,7 +470,7 @@ paths:
                   $ref: "#/components/schemas/UserRecipeSchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-  /category:
+  /api/category:
     post:
       summary: Add category
       description: Creates a new user category
@@ -500,7 +500,7 @@ paths:
                 $ref: "#/components/schemas/CategorySchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-  "/category/{id}":
+  "/api/category/{id}":
     get:
       summary: Get category
       description: Fetches a category given its id
@@ -546,7 +546,7 @@ paths:
                 $ref: "#/components/schemas/CategorySchema"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-  "/categories/{userId}":
+  "/api/categories/{userId}":
     get:
       summary: Get user categories
       description: Fetch all categories by a user given their user id

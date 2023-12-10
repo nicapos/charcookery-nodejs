@@ -103,14 +103,14 @@ const document = createDocument({
     "/api/recipes/{userId}": {
       get: RecipeOperations.getByUser,
     },
-    "/category": {
+    "/api/category": {
       post: CategoryOperations.post,
     },
-    "/category/{id}": {
+    "/api/category/{id}": {
       get: CategoryOperations.getById,
       delete: CategoryOperations.delete,
     },
-    "/categories/{userId}": {
+    "/api/categories/{userId}": {
       get: CategoryOperations.getByUser,
     },
   },
