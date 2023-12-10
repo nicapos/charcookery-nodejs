@@ -64,6 +64,10 @@ paths:
                 - grant_type
                 - username
                 - password
+              example:
+                grant_type: password
+                username: user@example.com
+                password: password123
         required: true
       responses:
         "200":
@@ -681,6 +685,10 @@ components:
     AccountSchema:
       type: object
       properties:
+        id:
+          type:
+            - string
+            - "null"
         name:
           type:
             - string
@@ -699,11 +707,13 @@ components:
             - string
             - "null"
       required:
+        - id
         - name
         - email
         - photo_url
         - dietary_restrictions
       example:
+        id: 9PxYKdW3sRfJgHmUnOlQ2xX7iTvAz1cE
         name: John Doe
         email: name@example.com
         photo_url: null

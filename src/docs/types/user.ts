@@ -64,11 +64,19 @@ export const LoginCredentialsSchema = z.object({
   password: z.string().min(8).openapi({ example: "password" }),
 });
 
-export const TokenCredentialsSchema = z.object({
-  grant_type: z.string(),
-  username: z.string(),
-  password: z.string().min(8).openapi({ example: "password" }),
-});
+export const TokenCredentialsSchema = z
+  .object({
+    grant_type: z.string(),
+    username: z.string(),
+    password: z.string().min(8).openapi({ example: "password" }),
+  })
+  .openapi({
+    example: {
+      grant_type: "password",
+      username: "user@example.com",
+      password: "password123",
+    },
+  });
 
 export const AccountAPISchema = AccountSchema.openapi({
   example: {
