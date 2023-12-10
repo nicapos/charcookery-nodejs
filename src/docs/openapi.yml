@@ -36,7 +36,22 @@ paths:
                   format: base64
       responses:
         "200":
-          description: API is up and running
+          description: Image was uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+                required:
+                  - name
+                  - url
+                example:
+                  name: My Image Name.png
+                  url: https://firebasestorage.googleapis.com/v0/b/charcookery.appspot.com/o/images%My%20Image%20Name.png
         "500":
           $ref: "#/components/responses/InternalErrorResponse"
   /api/token:

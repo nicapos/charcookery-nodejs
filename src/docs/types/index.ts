@@ -5,4 +5,5 @@ extendZodWithOpenApi(z);
 
 export * from "./user";
 export * from "./recipes";
+export * from "./media";
 export * from "./responses";

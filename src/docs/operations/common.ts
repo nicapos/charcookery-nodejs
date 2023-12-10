@@ -1,4 +1,5 @@
 import { ZodOpenApiOperationObject } from "zod-openapi";
+import { UploadMediaSchema } from "../types";
 
 const pingOperation: ZodOpenApiOperationObject = {
   summary: "Check API status",
@@ -39,7 +40,12 @@ const imageUploadOperation: ZodOpenApiOperationObject = {
   },
   responses: {
     "200": {
-      description: "API is up and running",
+      description: "Image was uploaded successfully",
+      content: {
+        "application/json": {
+          schema: UploadMediaSchema,
+        },
+      },
     },
     "500": {
       $ref: "#/components/responses/InternalErrorResponse",
