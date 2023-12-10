@@ -61,10 +61,12 @@ const recipesController = {
       RecipesService.tagAsFavoriteById(id, is_favorite)
         .then((recipe) => res.status(200).json(recipe))
         .catch((err) => handleError(res, err));
+      return;
     } else if (notes != undefined) {
       RecipesService.updateNotesById(id, notes)
         .then((recipe) => res.status(200).json(recipe))
         .catch((err) => handleError(res, err));
+      return;
     }
 
     res.status(400).json({
