@@ -178,7 +178,7 @@ class RecipesService {
       where("user_id", "==", userId),
     ];
 
-    if (filters.is_favorite) {
+    if (filters.is_favorite != undefined) {
       queryFilters.push(where("is_favorite", "==", filters.is_favorite));
     }
     if (filters.category) {
