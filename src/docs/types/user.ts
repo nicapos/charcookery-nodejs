@@ -72,6 +72,7 @@ export const TokenCredentialsSchema = z.object({
 
 export const AccountAPISchema = AccountSchema.openapi({
   example: {
+    id: "9PxYKdW3sRfJgHmUnOlQ2xX7iTvAz1cE",
     name: "John Doe",
     email: "name@example.com",
     photo_url: null,

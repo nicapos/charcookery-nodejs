@@ -1,14 +1,10 @@
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
   getDoc,
-  getDocs,
-  query,
   setDoc,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { User } from "firebase/auth";
@@ -31,7 +27,7 @@ class UserService {
     const userDocRef = doc(collection(db, "users"), firebaseUser.uid);
     await setDoc(userDocRef, account);
 
-    return account;
+    return { id: firebaseUser.uid, ...account };
   }
 
   /**
@@ -43,7 +39,7 @@ class UserService {
     const userDocRef = doc(collection(db, "users"), id);
 
     const snapshot = await getDoc(userDocRef);
-    const recipe = snapshot.data() as AccountType;
+    const recipe = { id, ...snapshot.data() } as AccountType;
 
     return recipe;
   }

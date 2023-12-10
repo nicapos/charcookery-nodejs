@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const AccountSchema = z.object({
+  id: z.string().nullable(),
   name: z.string().nullable(),
   email: z.string().email().nullable(),
   photo_url: z.string().nullable(),
