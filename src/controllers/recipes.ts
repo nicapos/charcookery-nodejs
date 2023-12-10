@@ -25,9 +25,8 @@ const recipesController = {
     // TODO: add limit, pagination
     const { userId } = UserParamSchema.parse(req.params);
     const query_filters = RecipesFiltersSchema.parse(req.query);
-    const filters = RecipesService.buildFilters(query_filters);
 
-    RecipesService.getAllByUser(userId, filters)
+    RecipesService.getAllByUser(userId, query_filters)
       .then((recipes) => res.status(200).json(recipes))
       .catch((err) => handleError(res, err));
   },

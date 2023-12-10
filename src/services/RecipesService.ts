@@ -1,5 +1,5 @@
 import {
-  QueryConstraint,
+  QueryCompositeFilterConstraint,
   QueryFieldFilterConstraint,
   addDoc,
   and,
@@ -8,6 +8,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  or,
   query,
   updateDoc,
   where,
@@ -28,15 +29,17 @@ class RecipesService {
    */
   static async getAllByUser(
     userId: string,
-    filters?: QueryFieldFilterConstraint[]
+    filters?: RecipeFiltersType
   ): Promise<UserRecipeType[]> {
     const recipesRef = collection(db, "recipes");
+    var q;
 
-    const userFilter = where("user_id", "==", userId);
-    const allFilters = filters ? [userFilter, ...filters] : [userFilter];
-    const queryFilter = and(...allFilters);
-
-    const q = query(recipesRef, queryFilter);
+    if (filters) {
+      const queryFilters = this.buildFilters(filters, userId);
+      q = query(recipesRef, queryFilters);
+    } else {
+      q = query(recipesRef, where("user_id", "==", userId));
+    }
 
     const snapshot = await getDocs(q);
     const recipes = snapshot.docs.map((doc) => ({
@@ -104,7 +107,11 @@ class RecipesService {
       await CategoryService.create(item.category, userId);
     }
 
-    const docRef = await addDoc(recipesRef, data);
+    // Add tokens for search
+    const nameIndices = item.name.toLowerCase().split(" ");
+    const indexedData = { nameIndices, ...data };
+
+    const docRef = await addDoc(recipesRef, indexedData);
     const recipe: UserRecipeType = { id: docRef.id, ...data };
 
     return recipe;
@@ -164,9 +171,12 @@ class RecipesService {
   }
 
   static buildFilters(
-    filters: RecipeFiltersType
-  ): QueryFieldFilterConstraint[] {
-    var queryFilters: QueryFieldFilterConstraint[] = [];
+    filters: RecipeFiltersType,
+    userId: string
+  ): QueryCompositeFilterConstraint {
+    var queryFilters: QueryFieldFilterConstraint[] = [
+      where("user_id", "==", userId),
+    ];
 
     if (filters.is_favorite) {
       queryFilters.push(where("is_favorite", "==", filters.is_favorite));
@@ -177,11 +187,19 @@ class RecipesService {
     if (filters.max_time) {
       queryFilters.push(where("duration_mins", "<=", filters.max_time));
     }
-    if (filters.q) {
-      // TODO: Add query to search if titles contain substring
-    }
 
-    return queryFilters;
+    const subqueryA = and(...queryFilters);
+
+    if (!filters.q) return subqueryA;
+
+    const tokens = filters.q.split(" ");
+    const tokenQueries = tokens.map((token) =>
+      where("nameIndices", "array-contains", token.toLowerCase())
+    );
+
+    const subqueryB = or(...tokenQueries);
+
+    return and(subqueryA, subqueryB);
   }
 }
 
