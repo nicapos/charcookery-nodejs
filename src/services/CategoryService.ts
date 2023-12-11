@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { CategoryType } from "../schemas/categories";
+import { FirebaseError } from "firebase/app";
 
 class CategoryService {
   /**
@@ -80,7 +81,8 @@ class CategoryService {
     title: string,
     userId: string
   ): Promise<boolean> {
-    return !!this.getByTitle(title, userId);
+    const match = await this.getByTitle(title, userId);
+    return Object.keys(match).length != 0;
   }
 
   /**
@@ -95,7 +97,7 @@ class CategoryService {
 
     const categoryExists = await this.checkExistsByTitle(title, userId);
     if (categoryExists)
-      throw Error(`Category "${title}" already exists for user ${userId}`);
+      throw new FirebaseError("EXISTS", `Category "${title}" already exists`);
 
     const docRef = await addDoc(categoryRef, data);
     const category: CategoryType = { id: docRef.id, ...data };
